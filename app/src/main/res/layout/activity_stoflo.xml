@@ -43,6 +43,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/info_game_store"
         />
+        <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/story_choose_listView"
+                android:layout_gravity="center_horizontal"
+        />
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
@@ -50,14 +56,14 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="bottom">
-        <ScrollView
+        <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:id="@+id/chooser_contianer"
         >
 
-        </ScrollView>
+        </HorizontalScrollView>
 
 
     </LinearLayout>
