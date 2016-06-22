@@ -25,21 +25,35 @@
             android:layout_height="match_parent">
 
         <LinearLayout
-                android:id="@+id/phone_login_form"
+                android:id="@+id/email_login_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+            >
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sign_up_email"
+                        android:hint="@string/username"
+                        android:inputType="text"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                        android:id="@+id/phone"
+                        android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_email"
-                        android:inputType="phone"
+                        android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:singleLine="true"/>
 
@@ -63,24 +77,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-            >
-                <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/sign_up_username"
-                        android:hint="@string/email"
-                        android:inputType="textEmailAddress"
-                />
-                <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/"
-                />
-            </android.support.design.widget.TextInputLayout>
+
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -116,7 +113,7 @@
 
 
             <Button
-                    android:id="@+id/phone_sign_in_button"
+                    android:id="@+id/email_sign_in_button"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,7 +128,15 @@
                     android:text="@string/action_sign_up"
                     android:layout_marginTop="16dp"
                     android:textStyle="bold"
-                    android:id="@+id/phone_sing_up_button"
+                    android:id="@+id/email_sing_up_button"
+            />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/error_login_textview"
+                    android:layout_marginTop="16dp"
+                    android:text=""
             />
 
         </LinearLayout>

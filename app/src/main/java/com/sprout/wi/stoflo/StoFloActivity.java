@@ -14,7 +14,7 @@ public class StoFloActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stoflo);
         TextView tv = (TextView) findViewById(R.id.test_text);
-        tv.setText("login"+getIntent().getBooleanExtra("login",false));
+        tv.setText("login succeed");
 
     }
 }
