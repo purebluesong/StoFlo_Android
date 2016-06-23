@@ -24,4 +24,6 @@
     <string name="error_sign_up_failed">注册失败</string>
     <string name="info_nickname">昵称:</string>
     <string name="info_game_store">游戏库</string>
+    <string name="create_new_game">开辟新世界</string>
+    <string name="info_continue_last">继续上次游戏</string>
 </resources>

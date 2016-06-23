@@ -3,13 +3,14 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="1" android:background="#85898e">
+
+              android:weightSum="1" android:background="@drawable/main_background" android:gravity="center">
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-    >
+            android:layout_marginTop="30dp" android:layout_marginLeft="20dp" android:layout_marginRight="20dp">
              <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -18,37 +19,30 @@
                         android:textSize="20dp"
                         android:layout_gravity="center"
                         android:alpha="0.8"
-             />
-            <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
-                                                           android:layout_height="wrap_content">
+                        android:textColor="#ffffff"/>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_gravity="center_vertical">
 
                 <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:alpha="0.8"
+                        android:alpha="0.7"
                         android:id="@+id/status_username"
-                />
+                        android:textColor="#ffffff" android:foregroundGravity="center_vertical"/>
             </android.support.design.widget.TextInputLayout>
     </LinearLayout>
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/main_content_container"
-    >
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/info_game_store"
-        />
-        <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/story_choose_listView"
-                android:layout_gravity="center_horizontal"
-        />
+
+
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+                  android:id="@+id/linearLayout" android:background="#ffffff" android:alpha="0.6"
+                  android:layout_margin="30dp">
+        <TextView style="@style/Base.TextAppearance.AppCompat.Large" android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:text="@string/info_game_store" android:gravity="center"/>
+        <ListView android:layout_width="match_parent" android:layout_height="300dp"
+                  android:id="@+id/listView" android:layout_gravity="center_horizontal"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
@@ -56,17 +50,24 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="bottom">
-        <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/chooser_contianer"
-        >
-
-        </HorizontalScrollView>
-
-
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_weight="1"
+                    android:text="@string/create_new_game"
+                    android:id="@+id/create_new_game"
+                    android:layout_gravity="bottom"/>
+            <Button
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/info_continue_last"
+                    android:id="@+id/continue_last_button"
+                    android:layout_gravity="center"/>
     </LinearLayout>
+
 
 
 </LinearLayout>

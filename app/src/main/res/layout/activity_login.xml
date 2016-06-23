@@ -2,13 +2,13 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:gravity="center_horizontal"
               android:orientation="vertical"
               android:paddingBottom="@dimen/activity_vertical_margin"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context="com.sprout.wi.stoflo.LoginActivity">
+              tools:context="com.sprout.wi.stoflo.LoginActivity" android:background="@drawable/login_background"
+              android:gravity="center">
 
     <!-- Login progress -->
     <ProgressBar
@@ -22,7 +22,7 @@
     <ScrollView
             android:id="@+id/login_form"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content" android:layout_gravity="center">
 
         <LinearLayout
                 android:id="@+id/email_login_form"
@@ -59,21 +59,20 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"/>
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                <EditText
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/prompt_password"
-                        android:imeActionId="@+id/login"
-                        android:imeActionLabel="@string/action_sign_in_short"
-                        android:imeOptions="actionUnspecified"
-                        android:inputType="textPassword"
-                        android:maxLines="1"
-                        android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -119,17 +118,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/action_sign_in"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" android:alpha="0.7"/>
 
             <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     style="?android:textAppearanceSmall"
                     android:layout_height="wrap_content"
                     android:text="@string/action_sign_up"
                     android:layout_marginTop="16dp"
                     android:textStyle="bold"
                     android:id="@+id/email_sing_up_button"
-            />
+                    android:alpha="0.7"/>
 
             <TextView
                     android:layout_width="match_parent"
