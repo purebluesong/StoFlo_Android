@@ -1,13 +1,10 @@
 package com.sprout.wi.stoflo;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ListView;
 import com.avos.avoscloud.AVUser;
 
 /**
@@ -16,16 +13,30 @@ import com.avos.avoscloud.AVUser;
 public class StoFloActivity extends Activity {
 
     private EditText mUsernameView;
+    private Button mCreateNewGameButton;
+    private Button mContinueLastGameButton;
+    private ListView mGameListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_stoflo);
 
+        initView();
+
+    }
+
+    private void initView() {
         mUsernameView = (EditText) findViewById(R.id.status_username);
         mUsernameView.setText(AVUser.getCurrentUser().getUsername());
+        mCreateNewGameButton = (Button) findViewById(R.id.create_new_game);
+        mContinueLastGameButton = (Button) findViewById(R.id.continue_last_button);
+        mGameListView = (ListView) findViewById(R.id.GAME_LIST_VIEW);
+
+
+    }
+
+    private void jumpToCreatePage(){
+
     }
 }

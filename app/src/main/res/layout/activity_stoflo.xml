@@ -42,7 +42,7 @@
         <TextView style="@style/Base.TextAppearance.AppCompat.Large" android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:text="@string/info_game_store" android:gravity="center"/>
         <ListView android:layout_width="match_parent" android:layout_height="300dp"
-                  android:id="@+id/listView" android:layout_gravity="center_horizontal"/>
+                  android:id="@+id/GAME_LIST_VIEW" android:layout_gravity="center_horizontal"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"

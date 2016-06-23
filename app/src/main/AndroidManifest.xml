@@ -27,6 +27,9 @@
         <activity android:name=".StoFloActivity"
         >
         </activity>
+        <activity android:name=".CreateStoryActivity">
+
+        </activity>
     </application>
 
 </manifest>
