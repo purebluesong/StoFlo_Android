@@ -27,9 +27,19 @@
         <activity android:name=".StoFloActivity"
         >
         </activity>
-        <activity android:name=".CreateStoryActivity">
+
+        <activity android:name=".CreateStoryActivity"
+            android:launchMode="singleInstance"
+        >
 
         </activity>
+
+        <activity android:name=".GameActivity"
+            android:launchMode="singleInstance"
+        >
+
+        </activity>
+
     </application>
 
 </manifest>

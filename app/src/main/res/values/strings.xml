@@ -26,4 +26,10 @@
     <string name="info_game_store">游戏库</string>
     <string name="create_new_game">开辟新世界</string>
     <string name="info_continue_last">继续上次游戏</string>
+    <string name="logout">登出</string>
+    <string name="info_chapter_name">章节名</string>
+    <string name="info_chapter_content">内容</string>
+    <string name="info_chapter_background">背景</string>
+    <string name="function_add_next_chapters">选择章节</string>
+    <string name="info_chapter_content_text">文本</string>
 </resources>
