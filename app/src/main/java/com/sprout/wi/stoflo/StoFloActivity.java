@@ -2,12 +2,15 @@ package com.sprout.wi.stoflo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import cn.finalteam.galleryfinal.*;
 import com.avos.avoscloud.AVUser;
+import com.sprout.wi.stoflo.component.GlideImageLoader;
 
 /**
  * Created by purebluesong on 2016/6/21.
@@ -26,7 +29,25 @@ public class StoFloActivity extends Activity {
         setContentView(R.layout.activity_stoflo);
 
         initView();
+        initComponent();
+    }
 
+    private void initComponent() {
+
+        //galleryImage
+        FunctionConfig functionConfig = new FunctionConfig.Builder()
+                .setEnableCamera(true)
+                .setEnableEdit(true)
+                .setEnableCrop(true)
+                .setEnableRotate(true)
+                .setCropSquare(true)
+                .setEnablePreview(true)
+                .build();
+        ImageLoader imageLoader = new GlideImageLoader();
+        CoreConfig coreConfig = new CoreConfig.Builder(this, imageLoader, ThemeConfig.CYAN)
+                .setFunctionConfig(functionConfig)
+                .build();
+        GalleryFinal.init(coreConfig);
     }
 
     private void initView() {
