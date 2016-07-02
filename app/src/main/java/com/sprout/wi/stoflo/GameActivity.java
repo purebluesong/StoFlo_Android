@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,11 +38,13 @@ public class GameActivity extends Activity{
     private TextView mContentView;
     private LinearLayout mNextsView;
     private LinearLayout gameViewContainer;
+    private ScrollView mRootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        mRootView = (ScrollView) getLayoutInflater().inflate(R.layout.activity_game,null);
+        setContentView(mRootView);
         String gameID = getIntent().getStringExtra(getString(R.string.info_intent_game));
         String chapterID = getIntent().getStringExtra(getString(R.string.info_intent_chapter));
         iniData(gameID,chapterID);
@@ -108,9 +109,15 @@ public class GameActivity extends Activity{
         for (AVObject chapter:mCurrentNextChapters) {
             addNextChapterButtonTo(chapter, mNextsView);
         }
+        mNextsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setClickable(false);
+            }
+        });
     }
 
-    private void addNextChapterButtonTo(final AVObject chapter, LinearLayout buttonContainer) {
+    private Button addNextChapterButtonTo(final AVObject chapter, LinearLayout buttonContainer) {
         Button button = new Button(this);
         button.setText(chapter.getString(getString(R.string.info_table_chapter_name)));
         button.setGravity(Gravity.CENTER);
@@ -125,13 +132,23 @@ public class GameActivity extends Activity{
             @Override
             public void onClick(View v) {
                 addChapterToView(chapter);
+                scrollToBottom();
             }
         });
-
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         button.setLayoutParams(params);
 
         buttonContainer.addView(button);
+        return button;
+    }
+
+    private void scrollToBottom() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRootView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
     }
 
     Handler mHandler = new Handler() {
@@ -143,9 +160,11 @@ public class GameActivity extends Activity{
                     if (mBackground != null){
                         mContentView.setBackgroundDrawable(new BitmapDrawable(getResources(),mBackground));
                     }
+                    scrollToBottom();
                     break;
                 case SET_NEXT_CHAPTERS:
                     setNexts();
+                    scrollToBottom();
                     break;
                 case INIT_ADD_CHAPTER:
                     addChapterToView(mCurrentChapter);
