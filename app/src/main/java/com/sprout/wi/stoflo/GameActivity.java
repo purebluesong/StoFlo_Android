@@ -2,24 +2,33 @@ package com.sprout.wi.stoflo;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by purebluesong on 2016/6/24.
  */
 public class GameActivity extends Activity{
+    private static final int SET_BACKGROUND = 1;
+    private static final int SET_NEXT_CHAPTERS = 2;
+    private static final int INIT_ADD_CHAPTER = 3;
+
     private List<AVObject> mChapterList;
     private AVObject mGame;
     private AVObject mCurrentChapter;
@@ -27,6 +36,9 @@ public class GameActivity extends Activity{
     private AVFile mBackgroundFile;
     private AVQuery<AVObject> mQuery;
     private List<AVObject> mCurrentNextChapters;
+    private TextView mContentView;
+    private HorizontalScrollView mNextsView;
+    private LinearLayout gameViewContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,21 +47,27 @@ public class GameActivity extends Activity{
         String gameID = getIntent().getStringExtra(getString(R.string.info_intent_game));
         String chapterID = getIntent().getStringExtra(getString(R.string.info_intent_chapter));
         iniData(gameID,chapterID);
-        addChapterToView(mCurrentChapter);
+        gameViewContainer = (LinearLayout) findViewById(R.id.game_view_container);
     }
 
     private void addChapterToView(AVObject chapter) {
-        String title = chapter.getString(getString(R.string.info_table_chapter_name));
         String content = chapter.getString(getString(R.string.info_table_chapter_content));
         mBackgroundFile = chapter.getAVFile(getString(R.string.info_table_chapter_background));
         mQuery = chapter.getRelation(getString(R.string.info_table_chapter_nexts)).getQuery();
         mCurrentNextChapters = null;
+        mChapterList.add(chapter);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    mBackground = Global.Bytes2Bimap(mBackgroundFile.getData());
+                    if (mBackgroundFile!= null){
+                        mBackground = Global.Bytes2Bimap(mBackgroundFile.getData());
+                    } else {
+                        mBackground = null;
+                    }
                     mCurrentNextChapters = mQuery.find();
+                    mHandler.sendMessage(mHandler.obtainMessage(SET_BACKGROUND));
+                    mHandler.sendMessage(mHandler.obtainMessage(SET_NEXT_CHAPTERS));
                 } catch (AVException e) {
                     e.printStackTrace();
                 }
@@ -59,12 +77,15 @@ public class GameActivity extends Activity{
 
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout container = (LinearLayout) inflater.inflate(R.layout.chapter_show_asset,null);
-        TextView contentView = (TextView) container.findViewById(R.id.chapter_content_show);
-        HorizontalScrollView nextsView = (HorizontalScrollView) container.findViewById(R.id.chapter_next_container);
-        contentView.setText(content);
+        mContentView = (TextView) container.findViewById(R.id.chapter_content_show);
+        mNextsView = (HorizontalScrollView) container.findViewById(R.id.chapter_next_container);
+        mContentView.setText(content);
+
+        gameViewContainer.addView(container);
     }
 
     private void iniData(final String gameID, final String chapterID) {
+        mChapterList = new ArrayList<>();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -73,6 +94,7 @@ public class GameActivity extends Activity{
                     mGame.fetch();
                     mCurrentChapter = AVObject.createWithoutData(mGame.getString(getString(R.string.info_table_chapter_table_name)) ,chapterID);
                     mCurrentChapter.fetch();
+                    mHandler.sendMessage(mHandler.obtainMessage(INIT_ADD_CHAPTER));
                 } catch (AVException e) {
                     Toast.makeText(getApplicationContext(),getString(R.string.error_fetch_game_failed),Toast.LENGTH_LONG);
                     e.printStackTrace();
@@ -81,4 +103,51 @@ public class GameActivity extends Activity{
         });
         thread.start();
     }
+
+    private void setNexts() {
+        for (AVObject chapter:mCurrentNextChapters) {
+            addNextChapterButtonTo(chapter, mNextsView);
+        }
+    }
+
+    private void addNextChapterButtonTo(final AVObject chapter, HorizontalScrollView buttonContainer) {
+        Button button = new Button(this);
+        button.setText(chapter.getString(getString(R.string.info_table_chapter_name)));
+        button.setGravity(Gravity.CENTER);
+        button.setSingleLine();
+        button.setBackgroundColor(Color.CYAN);
+        button.getBackground().setAlpha(255);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addChapterToView(chapter);
+            }
+        });
+
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        button.setLayoutParams(params);
+
+        buttonContainer.addView(button);
+    }
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case SET_BACKGROUND:
+                    if (mBackground != null){
+                        mContentView.setBackgroundDrawable(new BitmapDrawable(getResources(),mBackground));
+                    }
+                    break;
+                case SET_NEXT_CHAPTERS:
+                    setNexts();
+                    break;
+                case INIT_ADD_CHAPTER:
+                    addChapterToView(mCurrentChapter);
+                    break;
+            }
+        }
+    };
+
 }
