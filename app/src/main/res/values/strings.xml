@@ -55,4 +55,10 @@
     <string name="info_table_chapter_content">content</string>
     <string name="info_table_chapter_background">background</string>
     <string name="info_table_owner_game">owner_game</string>
+    <string name="info_table_chapter_nexts">nexts</string>
+    <string name="info_table_current_edit">current_edit</string>
+    <string name="info_choose_chapter">选择章节</string>
+    <string name="info_new_chapter">新章节</string>
+    <string name="info_table_chapter_table_name">chapter_table_name</string>
+    <string name="error_create_empty_chapter_failed">创建新章节失败</string>
 </resources>

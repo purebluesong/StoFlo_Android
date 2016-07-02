@@ -1,4 +1,4 @@
-package com.sprout.wi.stoflo;
+package com.sprout.wi.stoflo.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -9,9 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import com.avos.avoscloud.AVObject;
+import com.sprout.wi.stoflo.R;
+import com.sprout.wi.stoflo.StoFloActivity;
 
 /**
  * Created by purebluesong on 2016/6/30.
