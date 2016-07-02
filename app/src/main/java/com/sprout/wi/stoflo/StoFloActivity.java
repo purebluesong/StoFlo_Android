@@ -49,8 +49,13 @@ public class StoFloActivity extends Activity {
         setContentView(R.layout.activity_stoflo);
 
         initView();
-        initData();
         initComponent();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initData();
     }
 
     private void initData() {

@@ -9,6 +9,8 @@
             android:layout_height="wrap_content"
             android:gravity="top|left"
             android:minLines="5"
+            android:background="@color/fuck"
+            android:textColor="@color/white"
             android:shadowRadius="5"
             android:shadowColor="@color/colorPrimaryDark"
             android:id="@+id/chapter_content_show"
@@ -19,9 +21,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:id="@+id/chapter_next_container"
     >
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/chapter_next_container"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:foregroundGravity="center"
+                android:layout_gravity="center"
+        >
 
+        </LinearLayout>
     </HorizontalScrollView>
 
 </LinearLayout>

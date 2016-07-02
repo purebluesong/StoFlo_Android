@@ -340,7 +340,9 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
             game.put(getString(R.string.info_table_game_description), description);
             game.put(getString(R.string.info_table_chapter_table_name), chapterTable);
             AVObject startChapter = createStartChapterSilence(chapterTable);
-            game.put(getString(R.string.info_table_start_chapter), startChapter);
+            if (startChapter!=null){
+                game.put(getString(R.string.info_table_start_chapter), startChapter);
+            }
             game.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(AVException e) {
@@ -376,13 +378,30 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
         AVObject chapter = new AVObject(chapterTable);
         chapter.put(getString(R.string.info_table_chapter_name), title);
         chapter.put(getString(R.string.info_table_chapter_content), content);
-        chapter.put(getString(R.string.info_table_chapter_background), background);
         AVRelation relation = chapter.getRelation(getString(R.string.info_table_chapter_nexts));
         for (AVObject nextchapter : nextChapters) {
             relation.add(nextchapter);
         }
         chapter.saveInBackground(callback);
+        saveBackgroundFile(background);
         return chapter;
+    }
+
+    private void saveBackgroundFile(final byte[] background) {
+        if (background!=null){
+            Thread thread  = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AVFile backgroundFile = new AVFile(getString(R.string.info_table_chapter_background),background);
+                    try {
+                        backgroundFile.save();
+                    } catch (AVException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
     }
 
     class ChapterChooser {

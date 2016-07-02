@@ -37,7 +37,7 @@ public class GameActivity extends Activity{
     private AVQuery<AVObject> mQuery;
     private List<AVObject> mCurrentNextChapters;
     private TextView mContentView;
-    private HorizontalScrollView mNextsView;
+    private LinearLayout mNextsView;
     private LinearLayout gameViewContainer;
 
     @Override
@@ -78,7 +78,7 @@ public class GameActivity extends Activity{
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout container = (LinearLayout) inflater.inflate(R.layout.chapter_show_asset,null);
         mContentView = (TextView) container.findViewById(R.id.chapter_content_show);
-        mNextsView = (HorizontalScrollView) container.findViewById(R.id.chapter_next_container);
+        mNextsView = (LinearLayout) container.findViewById(R.id.chapter_next_container);
         mContentView.setText(content);
 
         gameViewContainer.addView(container);
@@ -110,13 +110,17 @@ public class GameActivity extends Activity{
         }
     }
 
-    private void addNextChapterButtonTo(final AVObject chapter, HorizontalScrollView buttonContainer) {
+    private void addNextChapterButtonTo(final AVObject chapter, LinearLayout buttonContainer) {
         Button button = new Button(this);
         button.setText(chapter.getString(getString(R.string.info_table_chapter_name)));
         button.setGravity(Gravity.CENTER);
         button.setSingleLine();
         button.setBackgroundColor(Color.CYAN);
-        button.getBackground().setAlpha(255);
+        button.getBackground().setAlpha(0);
+        button.setTextColor(Color.WHITE);
+        button.setShadowLayer(10,0,4,Color.WHITE);
+        button.setLeft(20);
+        button.setRight(20);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

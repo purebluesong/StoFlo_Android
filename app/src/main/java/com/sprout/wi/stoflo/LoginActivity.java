@@ -72,14 +72,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
         AVOSCloud.initialize(this,APP_ID,APP_KEY);
         AVAnalytics.trackAppOpened(getIntent());
         if(AVUser.getCurrentUser()!=null){
             jumpToMainPage();
             return ;
         }
+        setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
