@@ -22,11 +22,13 @@ import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
 import com.avos.avoscloud.*;
 import com.sprout.wi.stoflo.fragment.ChooseChapterDialogFragment;
+import com.sprout.wi.stoflo.fragment.ChooseChapterMultipleFragment;
 import com.sprout.wi.stoflo.fragment.CreateGameDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by purebluesong on 2016/6/24.
@@ -52,7 +54,7 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
     private static final int SAVE_CHAPTER_PIC = 1;
     private static final int SET_CHAPTER_PIC = 2;
 
-    private Handler mHandler = new Handler(getMainLooper()) {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -75,26 +77,43 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
         if (AVUser.getCurrentUser() == null) {
             jumpTo(LoginActivity.class);
         }
-        initData();
-        initView();
-        fillContentWith(mChapter);
-        registerOCL();
+        mGame = AVUser.getCurrentUser().getAVObject(getString(R.string.info_key_self_game));
+        if (mGame == null) {
+            showCreateGameDialog();
+        }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGame!= null){
+            initData();
+            initView();
+            fillContentWith(mChapter);
+            registerOCL();
+        }
     }
 
     private void initData() {
         AVUser user = AVUser.getCurrentUser();
-        mGame = user.getAVObject(getString(R.string.info_key_self_game));
         mBackground = null;
-        if (mGame == null) {
-            showCreateGameDialog();
-        }
-        try {
-            mNextChapters = user.getRelation(getString(R.string.info_table_chapter_nexts)).getQuery().find();
-        } catch (AVException e) {
-            e.printStackTrace();
-        }
+        startNewThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mNextChapters = AVUser.getCurrentUser().getRelation(getString(R.string.info_table_chapter_nexts)).getQuery().find();
+                } catch (AVException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mChapter = user.getAVObject(getString(R.string.info_self_game_current_edit));
+    }
+
+    private void startNewThread(Runnable runnable){
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     private void fillContentWith(AVObject chapter) {
@@ -188,13 +207,13 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
             public void onClick(View v) {
                 attemptSave();
                 clearPage();
-                mChapterChooser.chooseSingle();
+                fillContentWith(mChapterChooser.chooseSingle());
             }
         });
         mChaptersNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fillNextChaptersContainer(mChapterChooser.chooseMultiple());
+                mChapterChooser.showChooseMultipleDialog();
             }
         });
         mChapterContentBackground.setOnClickListener(new View.OnClickListener() {
@@ -304,9 +323,9 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        EditText nameEdit = (EditText) dialog.getView().findViewById(R.id.create_game_name);
+        EditText nameEdit = (EditText) ((CreateGameDialogFragment)dialog).findViewById(R.id.create_game_name);
         String gameName = nameEdit.getText().toString();
-        String description = ((EditText) dialog.getView().findViewById(R.id.create_game_description)).getText().toString();
+        String description = ((EditText) ((CreateGameDialogFragment)dialog).findViewById(R.id.create_game_description)).getText().toString();
         boolean cancel = false;
 
         if (gameName.length() == 0) {
@@ -316,7 +335,7 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
 
         if (!cancel) {
             AVObject game = new AVObject(getString(R.string.info_table_game));
-            String chapterTable = getString(R.string.info_game_prefix) + gameName;
+            String chapterTable = getString(R.string.info_game_prefix) + gameName.hashCode();
             game.put(getString(R.string.info_table_game_name), gameName);
             game.put(getString(R.string.info_table_game_description), description);
             game.put(getString(R.string.info_table_chapter_table_name), chapterTable);
@@ -367,11 +386,17 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
 
     class ChapterChooser {
         List<Integer> chooses = new ArrayList<>();
+        List<AVObject> allChapters = null;
 
-        AVObject chooseSingle() throws AVException {
+        AVObject chooseSingle() {
             String chapter_table_name = getString(R.string.info_game_prefix) + mGame.getString(getString(R.string.info_table_game_name));
             AVQuery<AVObject> query = new AVQuery<>(chapter_table_name);
-            List<AVObject> allChapters = query.find();
+            try {
+                allChapters = query.find();
+            } catch (AVException e) {
+                Toast.makeText(CreateStoryActivity.this, getString(R.string.error_query_failed), Toast.LENGTH_LONG);
+                e.printStackTrace();
+            }
             DialogFragment chooseSingleDialogFragment = new ChooseChapterDialogFragment(
                     allChapters, new ChooseChapterDialogFragment.ChooseSingleListener() {
                 @Override
@@ -389,7 +414,7 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
                     dialog.cancel();
                 }
             });
-            chooseSingleDialogFragment.show(getFragmentManager(),"ChooseChapterDialogFragment");
+            chooseSingleDialogFragment.show(getFragmentManager(), "ChooseChapterDialogFragment");
             if (!chooses.isEmpty() && chooses.get(0) > 0) {
                 return allChapters.get(chooses.get(0) - 1);
             } else {
@@ -397,8 +422,43 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
             }
         }
 
-        public List<AVObject> chooseMultiple() {
+        public void showChooseMultipleDialog() {
+            String chapter_table_name = getString(R.string.info_game_prefix) + mGame.getString(getString(R.string.info_table_game_name));
+            AVQuery<AVObject> query = new AVQuery<>(chapter_table_name);
+            try {
+                allChapters = query.find();
+            } catch (AVException e) {
+                Toast.makeText(CreateStoryActivity.this, getString(R.string.error_query_failed), Toast.LENGTH_LONG);
+                e.printStackTrace();
+                return;
+            }
+            DialogFragment chooseMultipleDialogFragment = new ChooseChapterMultipleFragment(
+                    allChapters, new ChooseChapterMultipleFragment.ChooseMultipleListener() {
 
+                @Override
+                public void onItemClick(DialogInterface dialog, int which, boolean isChecked) {
+                    if (isChecked) {
+                        chooses.add(which);
+                    } else if (chooses.contains(which)){
+                        chooses.remove(Integer.valueOf(which));
+                    }
+                }
+
+                @Override
+                public void onPositiveClick(DialogInterface dialog, int which) {
+                    List<AVObject> nexts = new ArrayList<>();
+                    for (Integer point :chooses) {
+                        nexts.add(allChapters.get(point));
+                    }
+                    fillNextChaptersContainer(nexts);
+                }
+
+                @Override
+                public void onNegativeClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            chooseMultipleDialogFragment.show(getFragmentManager(), "ChooseChapterDialogFragment");
         }
     }
 
@@ -407,11 +467,11 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
             return saveChapter(
                     mGame.getString(getString(R.string.info_table_chapter_table_name)),
                     getString(R.string.info_new_chapter),
-                    "",null,null
-                    );
+                    "", null, null
+            );
         } catch (AVException e) {
             e.printStackTrace();
-            Toast.makeText(this,R.string.error_create_empty_chapter_failed,Toast.LENGTH_SHORT);
+            Toast.makeText(this, R.string.error_create_empty_chapter_failed, Toast.LENGTH_SHORT);
             return null;
         }
     }

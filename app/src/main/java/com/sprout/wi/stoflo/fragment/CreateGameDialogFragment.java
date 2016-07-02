@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import com.sprout.wi.stoflo.R;
 import com.sprout.wi.stoflo.StoFloActivity;
 
@@ -21,6 +23,7 @@ public class CreateGameDialogFragment extends DialogFragment {
         void onDialogPositiveClick(DialogFragment dialog);
     }
 
+    private View mDefinedView;
     CreateGameListener mGameListener;
 
     @Override
@@ -33,12 +36,13 @@ public class CreateGameDialogFragment extends DialogFragment {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setView(R.layout.custom_create_game)
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        mDefinedView = inflater.inflate(R.layout.custom_create_game, null);
+        builder.setView(mDefinedView)
                 .setTitle(R.string.create_new_game)
                 .setPositiveButton(R.string.info_confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -61,6 +65,10 @@ public class CreateGameDialogFragment extends DialogFragment {
     private void jumpTo(Class<?> activityClass) {
         startActivity(new Intent(getActivity(),activityClass));
         getActivity().finish();
+    }
+
+    public View findViewById(int id) {
+        return mDefinedView.findViewById(id);
     }
 
 }
