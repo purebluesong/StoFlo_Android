@@ -1,7 +1,10 @@
 package com.sprout.wi.stoflo;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.StatusCallback;
 
@@ -30,6 +33,10 @@ public class Global {
         } else {
             return null;
         }
+    }
+
+    public static Drawable bitmap2Drawable(Bitmap pic, Resources res) {
+        return new BitmapDrawable(res, pic);
     }
 
 }

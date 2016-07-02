@@ -4,24 +4,44 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.*;
 import cn.finalteam.galleryfinal.*;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.sprout.wi.stoflo.component.GlideImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by purebluesong on 2016/6/21.
  */
 public class StoFloActivity extends Activity {
 
+    private static final int FILL_VIEW_DATA = 1;
     private EditText mUsernameView;
     private Button mCreateNewGameButton;
     private Button mContinueLastGameButton;
     private Button mLogoutButton;
     private ListView mGameListView;
+    private List<AVObject> mGameLsit;
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case FILL_VIEW_DATA:
+                    fillViewWithData();
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +49,34 @@ public class StoFloActivity extends Activity {
         setContentView(R.layout.activity_stoflo);
 
         initView();
+        initData();
         initComponent();
+    }
+
+    private void initData() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AVQuery<AVObject> query = new AVQuery<>(getString(R.string.info_table_game));
+                try {
+                    mGameLsit = query.find();
+                } catch (AVException e) {
+                    Toast.makeText(getApplicationContext(),getString(R.string.error_require_gamelist_failed),Toast.LENGTH_LONG);
+                    e.printStackTrace();
+                }
+                mHandler.sendMessage(mHandler.obtainMessage(FILL_VIEW_DATA));
+            }
+        });
+        thread.start();
+    }
+
+    private void fillViewWithData() {
+        List<String> gameNames = new ArrayList<>();
+        for (AVObject game: mGameLsit) {
+            gameNames.add(game.getString(getString(R.string.info_table_game_name)));
+        }
+        mGameListView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1 ,gameNames));
+
     }
 
     private void initComponent() {
@@ -67,7 +114,7 @@ public class StoFloActivity extends Activity {
         mContinueLastGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jumpToGamePage(0,0);
+//                jumpToGamePage(0,0);
             }
         });
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +123,18 @@ public class StoFloActivity extends Activity {
                 logout();
             }
         });
+
+        mGameListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mGameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startGame(mGameLsit.get(position));
+            }
+        });
+    }
+
+    private void startGame(AVObject game) {
+        jumpToGamePage(game.getObjectId(),game.getAVObject(getString(R.string.info_table_start_chapter)).getObjectId());
     }
 
     private void logout() {
@@ -88,14 +147,10 @@ public class StoFloActivity extends Activity {
         startActivity(new Intent(this,CreateStoryActivity.class));
     }
 
-    private void jumpToGamePage(int game) {
-        jumpToGamePage(game,0);
-    }
-
-    private void jumpToGamePage(int game, int chapter) {
+    private void jumpToGamePage(String game, String chapter) {
         Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("game", game);
-        intent.putExtra("chapter", chapter);
+        intent.putExtra(getString(R.string.info_intent_game), game);
+        intent.putExtra(getString(R.string.info_intent_chapter), chapter);
         startActivity(intent);
     }
 }

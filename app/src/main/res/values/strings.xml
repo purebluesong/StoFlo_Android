@@ -62,4 +62,9 @@
     <string name="info_table_chapter_table_name">chapter_table_name</string>
     <string name="error_create_empty_chapter_failed">创建新章节失败</string>
     <string name="error_query_failed">获取章节列表失败</string>
+    <string name="error_require_gamelist_failed">游戏列表获取失败，请检查网络连接</string>
+    <string name="info_table_start_chapter">start_chapter</string>
+    <string name="info_intent_game">game</string>
+    <string name="info_intent_chapter">chapter</string>
+    <string name="error_fetch_game_failed">拉取游戏数据失败，请检查网络连接</string>
 </resources>

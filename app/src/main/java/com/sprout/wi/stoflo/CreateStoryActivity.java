@@ -340,6 +340,7 @@ public class CreateStoryActivity extends Activity implements CreateGameDialogFra
             game.put(getString(R.string.info_table_game_description), description);
             game.put(getString(R.string.info_table_chapter_table_name), chapterTable);
             AVObject startChapter = createStartChapterSilence(chapterTable);
+            game.put(getString(R.string.info_table_start_chapter), startChapter);
             game.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(AVException e) {
