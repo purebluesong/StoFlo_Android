@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.avos.avoscloud.AVException
@@ -85,7 +83,7 @@ class GameActivity : Activity() {
             try {
                 mGame = AVObject.createWithoutData(getString(R.string.info_table_game), gameID)
                 mGame!!.fetch()
-                mCurrentChapter = AVObject.createWithoutData(mGame!!.getString(getString(R.string.info_table_chapter_table_name)), chapterID)
+                mCurrentChapter = AVObject.createWithoutData(mGame!!.getString(getString(R.string.info_table_game_chapter_table_name)), chapterID)
                 mCurrentChapter!!.fetch()
                 mHandler.sendMessage(mHandler.obtainMessage(INIT_ADD_CHAPTER))
             } catch (e: AVException) {
@@ -105,7 +103,7 @@ class GameActivity : Activity() {
 
     private fun addNextChapterButtonTo(chapter: AVObject, buttonContainer: LinearLayout): Button {
         val button = Button(this)
-        button.text = chapter.getString(getString(R.string.info_table_chapter_name))
+        button.text = chapter.getString(getString(R.string.info_table_chapter_title))
         button.gravity = Gravity.CENTER
         button.setSingleLine()
         button.setBackgroundColor(Color.CYAN)

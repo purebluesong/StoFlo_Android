@@ -13,9 +13,9 @@ import com.avos.avoscloud.AVException
 import com.avos.avoscloud.AVObject
 import com.avos.avoscloud.AVQuery
 import com.avos.avoscloud.AVUser
-import com.sprout.wi.stoflo.R
-import com.sprout.wi.stoflo.component.GlideImageLoader
 
+import com.sprout.wi.stoflo.component.GlideImageLoader
+import com.sprout.wi.stoflo.R
 import java.util.ArrayList
 
 /**
@@ -86,8 +86,10 @@ class StoFloActivity : Activity() {
     }
 
 
-    private fun startGame(game: AVObject) {
-        jumpToGamePage(game.objectId, game.getAVObject<AVObject>(getString(R.string.info_table_start_chapter)).objectId)
+    private fun startGame(game: AVObject?) {
+        if (game != null) {
+            jumpToGamePage(game.objectId, game.getAVObject<AVObject>(getString(R.string.info_table_game_start_chapter)).objectId)
+        }
     }
 
     private fun logout() {
@@ -116,10 +118,11 @@ class StoFloActivity : Activity() {
         mGameListView = findViewById(R.id.GAME_LIST_VIEW) as ListView
 
         mCreateNewGameButton!!.setOnClickListener { jumpToCreatePage() }
-//        mContinueLastGameButton!!.setOnClickListener { //                jumpToGamePage(0,0); }
         mLogoutButton!!.setOnClickListener { logout() }
 
         mGameListView!!.choiceMode = ListView.CHOICE_MODE_SINGLE
-//        mGameListView!!.onItemClickListener = { OnItemClickListener{ parent, view, i, l -> Unit } }
+        mGameListView!!.onItemClickListener = OnItemClickListener{
+            parent, view, position, id -> startGame(mGameList?.get(position))
+        }
     }
 }
